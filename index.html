@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Impostos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            padding: 20px;
+            background: linear-gradient(to bottom right, #007DB5, #53BE95);
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            width: 300px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        input {
+            width: calc(100% - 16px);
+            padding: 8px;
+            margin-top: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            cursor: pointer;
+            background-color: #53BE95;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #3F9E73;
+        }
+
+        #resultado {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+
+        h1 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #007DB5;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        select {
+            width: calc(100% - 16px);
+            padding: 8px;
+            margin-top: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calculadora de Impostos</h1>
+        <div>
+            <label for="receita">Receita Anual:</label>
+            <input type="number" id="receita">
+        </div>
+        <div>
+            <label for="folha">Folha de Pagamento Anual:</label>
+            <input type="number" id="folha">
+        </div>
+        <div>
+            <label for="temFolha">A empresa possui folha de pagamento?</label>
+            <select id="temFolha">
+                <option value="sim">Sim</option>
+                <option value="nao">Não</option>
+            </select>
+        </div>
+        <button onclick="calcularImpostos()">Calcular</button>
+        <div id="resultado"></div>
+    </div>
+
+    <script>
+        function calcularImpostos() {
+            var receita = parseFloat(document.getElementById("receita").value);
+            var folha = parseFloat(document.getElementById("folha").value);
+            var temFolha = document.getElementById("temFolha").value;
+
+            var impostoSimplesNacional = calcularImpostoSimplesNacional(receita, folha, temFolha);
+            var impostoLucroPresumido = calcularImpostoLucroPresumido(receita, folha);
+            var impostoLucroPresumidoIssNormal = calcularImpostoLucroPresumidoIssNormal(receita);
+
+            var resultado = document.getElementById("resultado");
+            resultado.innerHTML = "Imposto Simples Nacional: R$ " + impostoSimplesNacional.toFixed(2) + "<br>";
+            resultado.innerHTML += "Imposto Lucro Presumido ISS Fixo: R$ " + impostoLucroPresumido.toFixed(2) + "<br>";
+            resultado.innerHTML += "Imposto Lucro Presumido ISS Normal: R$ " + impostoLucroPresumidoIssNormal.toFixed(2);
+        }
+
+        function calcularImpostoSimplesNacional(receita, folha, temFolha) {
+            var percentualFolha = folha / receita * 100;
+
+            var aliquotaNominal = 0;
+            var deducaoParcela = 0;
+
+            if (temFolha === "sim" && percentualFolha > 28) {
+                if (receita <= 180000) {
+                    aliquotaNominal = 6;
+                    deducaoParcela = 0;
+                } else if (receita > 180000 && receita <= 360000) {
+                    aliquotaNominal = 11.2;
+                    deducaoParcela = 9360;
+                } else if (receita <= 720000) {
+                    aliquotaNominal = 13.5;
+                    deducaoParcela = 17640;
+                } else if (receita <= 1800000) {
+                    aliquotaNominal = 16;
+                    deducaoParcela = 35640;
+                } else if (receita <= 3600000) {
+                    aliquotaNominal = 21;
+                    deducaoParcela = 125640;
+                } else if (receita <= 4800000) {
+                    aliquotaNominal = 33;
+                    deducaoParcela = 648000;
+                } else {
+                    aliquotaNominal = 33;
+                    deducaoParcela = 648000;
+                }
+            } else {
+                if (receita <= 180000) {
+                    aliquotaNominal = 15;
+                    deducaoParcela = 0;
+                } else if (receita <= 360000) {
+                    aliquotaNominal = 18;
+                    deducaoParcela = 4500;
+                } else if (receita <= 720000) {
+                    aliquotaNominal = 19.5;
+                    deducaoParcela = 9900;
+                } else if (receita <= 1800000) {
+                    aliquotaNominal = 22;
+                    deducaoParcela = 17100;
+                } else if (receita <= 3600000) {
+                    aliquotaNominal = 25.5;
+                    deducaoParcela = 62100;
+                } else if (receita <= 4800000) {
+                    aliquotaNominal = 28.5;
+                    deducaoParcela = 540000;
+                } else {
+                    aliquotaNominal = 30.5;
+                    deducaoParcela = 720000;
+                }
+            }
+
+            var deducaoEfetiva = (receita * deducaoParcela) / 100;
+            var impostoDevido = receita * (aliquotaNominal / 100) - deducaoEfetiva;
+
+            return impostoDevido;
+        }
+
+        function calcularImpostoLucroPresumido(receita) {
+            var receitaTributavel = receita;
+            var valorIrpj = receitaTributavel * (4.8/100);
+            var valorCll = receitaTributavel * (2.88/100);
+            var valorPis = receitaTributavel * (0.65/100);
+            var valorCofins = receitaTributavel * (3/100);
+            var somaTotal = valorIrpj + valorCll + valorPis + valorCofins;
+            return somaTotal;
+        }
+
+        function calcularImpostoLucroPresumidoIssNormal(receita) {
+            var receitaTributavel = receita;
+            var valorIrpj = receitaTributavel * (4.8/100);
+            var valorCll = receitaTributavel * (2.88/100);
+            var valorPis = receitaTributavel * (0.65/100);
+            var valorCofins = receitaTributavel * (3/100);
+            var valorIss = receitaTributavel * (5/100);
+            var somaTotal = valorIrpj + valorCll + valorPis + valorCofins + valorIss;
+            return somaTotal;
+        }
+    </script>
+</body>
+</html>
