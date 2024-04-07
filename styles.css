@@ -69,3 +69,29 @@ select {
     border-radius: 4px;
     outline: none;
 }
+
+
+.contact-box {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #53BE95;
+    color: white;
+    padding: 10px;
+    border-radius: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    font-family: 'Nunito', sans-serif;
+    text-align: center;
+}
+
+.contact-box p {
+    margin: 0;
+    font-size: 14px;
+}
+
+.contact-box img {
+    width: 30px;
+    height: 30px;
+    margin-left: 10px;
+    vertical-align: middle;
+}
